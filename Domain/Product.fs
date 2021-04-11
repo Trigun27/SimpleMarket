@@ -1,7 +1,12 @@
-module ProductTypes
-
+module Products 
+    
 open System
 
+type MagicType =
+    | Common
+    | Uncommon
+    | Rare
+        
 type TypeOfGood =
     | Sword
     | Bow 
@@ -17,7 +22,7 @@ type Product = {
         Quantity: uint
         Type: TypeOfGood
     }
-
+    
 [<RequireQualifiedAccess>]
 module Product =
     let validate product =
@@ -39,5 +44,3 @@ module Product =
             product with Quantity = product.Quantity + delta
         }
         newQuantity
-        
-    

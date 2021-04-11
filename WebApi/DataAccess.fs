@@ -1,11 +1,10 @@
-namespace Market
+namespace Data
 
 open Dapper
 open Npgsql
-open ProductTypes
 
 
 module DataAccess =
 
-let getMeeting =
-    ()
+    let getMeeting =
+        ()
