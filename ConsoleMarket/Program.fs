@@ -64,11 +64,12 @@ let main argv =
     
     let p: Product list = []
     
-    let adminCommand =
+    let products = 
         commands
         |> Seq.choose tryParse
         |> Seq.takeWhile ((<>) Exit)
         |> Seq.choose tryGetCommand
+        |> Seq.fold processCommand p
      
     
     0 // return an integer exit code

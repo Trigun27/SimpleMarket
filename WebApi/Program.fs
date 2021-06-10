@@ -14,13 +14,9 @@ open Giraffe
 open Giraffe.Razor
 open System
 open System.IO
-open Npgsql
 
 
 open Npgsql
-open PIK.Core.Authentication
-open PIK.Core.Extensions
-
 open Serilog
 open Routing
 
@@ -47,7 +43,8 @@ let configureServices (services: IServiceCollection) =
     let env = sp.GetService<IHostEnvironment>()
     let viewsFolderPath = Path.Combine(env.ContentRootPath, "Views")
     services.AddRazorEngine viewsFolderPath |> ignore
-    services.AddPIKAuthenticationForApiResource(config) |> ignore
+    
+    Dapper.FSharp.OptionTypes.register()
     
     services.AddTransient<NpgsqlConnection>(fun x -> new NpgsqlConnection(config.GetConnectionString("Market"))) |> ignore
     
