@@ -13,8 +13,6 @@ let product =
         table "product"
     }
     
-
-
 let addProduct (conn: IDbConnection) (product: Product) =
     insert {
         table "product"

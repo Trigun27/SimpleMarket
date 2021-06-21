@@ -9,8 +9,8 @@ open Microsoft.AspNetCore.Http
 open Npgsql
 open Products
 open FSharp.Control.Tasks
-
 open Repo
+
 
 [<CLIMutable>]  
 type ProductIo = {
