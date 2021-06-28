@@ -16,7 +16,7 @@ open Repo
 type ProductIo = {
     Id: Guid option
     Name: string
-    SimpleInfo: string
+    Info: string
 }
 
 let getConn (ctx: HttpContext) =
@@ -27,17 +27,28 @@ let addProduct : HttpHandler =
     fun (next: HttpFunc) (ctx: HttpContext) ->
         task {
             let! productIo = ctx.BindJsonAsync<ProductIo>()
-            let product = Product.create productIo.Name productIo.SimpleInfo
+            let product = Product.create productIo.Name productIo.Info
             let conn = getConn ctx
             let! t = addProduct conn product
-            let! result = takeProduct conn product.Id
-            return! Successful.OK result next ctx
+            let! product = takeProduct conn product.Id
+            return! json product next ctx
         }
 
 let getProduct (id: Guid) : HttpHandler =
     fun (next: HttpFunc) (ctx: HttpContext) ->
         task {
             let conn = getConn ctx
+            let! product = takeProduct conn id
+            return! json product next ctx
+        }
+        
+let updateProduct (id: Guid) : HttpHandler =
+    fun (next: HttpFunc) (ctx: HttpContext) ->
+        task {
+            let! productIo = ctx.BindJsonAsync<ProductIo>()
+            let conn = getConn ctx
+            let request = Product.build productIo.Id.Value productIo.Name productIo.Info 
+            let! result = updateProduct conn request
             let! product = takeProduct conn id
             return! json product next ctx
         }
@@ -60,7 +71,8 @@ let apiProductRoutes: HttpHandler =
             POST >=> choose [
                 route "" >=> addProduct
             ]
-            PUT >=> routef "/%O" (fun (guid: Guid) -> text (guid.ToString()))]
+            PUT >=> routef "/%O" updateProduct
+            ]
         )
 
 let routes: HttpFunc -> HttpFunc =

@@ -2,6 +2,14 @@ module Products
     
 open System
         
+        
+[<CLIMutable>]
+type ProductRequest = {
+        Id: Guid option
+        Name: string
+        Info: string
+    }
+        
 [<CLIMutable>]  
 type Product = {
         Id: Guid
@@ -22,6 +30,9 @@ module Product =
     let create name info =
         let p = {Id = Guid.NewGuid(); Name = name; Info = info;  } //Type = typeOfGood
         p
+        
+    let build id name info =
+        {Id = id; Name = name; Info = info}
        
     let print product =
         sprintf "%A;%s;%s;%d" product.Id product.Name product.Info //product.Type

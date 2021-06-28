@@ -9,6 +9,10 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "ConsoleMarket", "ConsoleMar
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Domain", "Domain\Domain.fsproj", "{1328E7C8-EDCD-4173-A44A-AD8927865174}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db.Migration", "Db.Migration\Db.Migration.csproj", "{26CE2D98-656B-4B6C-94AE-CD790B5E998D}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "DAL", "DAL\DAL.fsproj", "{4776DB8F-1B6D-4746-A842-48DD1F8C658C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{1328E7C8-EDCD-4173-A44A-AD8927865174}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1328E7C8-EDCD-4173-A44A-AD8927865174}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1328E7C8-EDCD-4173-A44A-AD8927865174}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26CE2D98-656B-4B6C-94AE-CD790B5E998D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26CE2D98-656B-4B6C-94AE-CD790B5E998D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26CE2D98-656B-4B6C-94AE-CD790B5E998D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26CE2D98-656B-4B6C-94AE-CD790B5E998D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4776DB8F-1B6D-4746-A842-48DD1F8C658C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4776DB8F-1B6D-4746-A842-48DD1F8C658C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4776DB8F-1B6D-4746-A842-48DD1F8C658C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4776DB8F-1B6D-4746-A842-48DD1F8C658C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -10,7 +10,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\DAL\DAL.fsproj" />
       <ProjectReference Include="..\Domain\Domain.fsproj" />
     </ItemGroup>
 

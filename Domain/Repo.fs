@@ -2,36 +2,38 @@ module Repo
 
 open System
 open System.Data
+open System.Text
 open System.Threading.Tasks
-open Dapper.FSharp
-open Dapper.FSharp.PostgreSQL
+open Dapper
+open FSharp.Control.Tasks
 
 open Products
-
-let product =
-    select {
-        table "product"
-    }
     
 let addProduct (conn: IDbConnection) (product: Product) =
-    insert {
-        table "product"
-        value product
-    } |> conn.InsertAsync
+    let query = $"insert into public.product(\"Id\", \"Name\", \"Info\") values('{product.Id}', '{product.Name}', '{product.Info}')"
+    task {
+        let! data =  conn.ExecuteAsync(query)
+        return data
+    }
     
+let updateProduct (conn: IDbConnection) (product: Product) =
+    let query = $"update public.product set \"Name\" = '{product.Name}', \"Info\" = '{product.Info}' where \"Id\" = '{product.Id}'"
+    task {
+        let! data = conn.ExecuteAsync(query)
+        return data
+    }
     
 let takeProduct (conn: IDbConnection) (id: Guid) =
-    
-    select {
-        table "product"
-        where (eq "Id" id)
-    } |> conn.SelectAsync<Product>
+    let query = $"select * from public.product where \"Id\" = '{id}'"
+    task {
+        let! data = conn.QueryFirstAsync<Product>(query)
+        return data
+    }
     
 let takeAllProducts (conn: IDbConnection) =
-    select {
-        table "product"
-        //where (eq "Name" name)
-        orderBy "id" Asc
-        //skip offset
-        //take takeTo        
-    } |> conn.SelectAsync<Product>
+    let query = "select * from public.product"
+    task {
+        let! data = conn.QueryAsync<Product>(query)
+        return data
+    }
+    

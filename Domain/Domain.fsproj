@@ -12,8 +12,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Dapper.FSharp" Version="2.1.0" />
+      <PackageReference Include="Dapper" Version="2.0.90" />
       <PackageReference Include="Npgsql" Version="5.0.4" />
+      <PackageReference Include="TaskBuilder.fs" Version="2.1.0" />
     </ItemGroup>
 
 </Project>

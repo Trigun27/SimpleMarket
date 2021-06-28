@@ -14,11 +14,14 @@ open Giraffe
 open Giraffe.Razor
 open System
 open System.IO
+open FluentMigrator.Runner
+open Db.Migration
 
 
 open Npgsql
 open Serilog
 open Routing
+
 
 
 
@@ -44,28 +47,47 @@ let configureServices (services: IServiceCollection) =
     let viewsFolderPath = Path.Combine(env.ContentRootPath, "Views")
     services.AddRazorEngine viewsFolderPath |> ignore
     
-    Dapper.FSharp.OptionTypes.register()
     
     services.AddTransient<NpgsqlConnection>(fun x -> new NpgsqlConnection(config.GetConnectionString("Market"))) |> ignore
     
     // Register default Giraffe dependencies
     services.AddGiraffe() |> ignore
+    
+    services.AddFluentMigratorCore()
+        .ConfigureRunner(fun rb ->
+            rb.AddPostgres()
+                .WithGlobalConnectionString(config.GetConnectionString("Market"))
+                .ScanIn(typeof<Base>.Assembly)
+                .For
+                .Migrations() |> ignore) |> ignore
+
+
+let updateDb (sp : IServiceProvider) =
+    let runner = sp.GetRequiredService<IMigrationRunner>()
+    runner.MigrateUp()
+    
 
 
 [<EntryPoint>]
 let main _ =
     let contentRoot = Directory.GetCurrentDirectory()
-    Host.CreateDefaultBuilder()
-        .UseSerilog(fun host config -> config.ReadFrom.Configuration(host.Configuration) |> ignore)
-        .ConfigureWebHostDefaults(
-            fun webHostBuilder ->
-                webHostBuilder
-                    .UseKestrel()
-                    .UseContentRoot(contentRoot)
-                    .Configure(configureApp)
-                    .ConfigureServices(configureServices)
-                    |> ignore)
-        
-        .Build()
-        .Run()
+    let db = Host.CreateDefaultBuilder()
+                .UseSerilog(fun host config -> config.ReadFrom.Configuration(host.Configuration) |> ignore)
+                .ConfigureWebHostDefaults(
+                    fun webHostBuilder ->
+                        webHostBuilder
+                            .UseKestrel()
+                            .UseContentRoot(contentRoot)
+                            .Configure(configureApp)
+                            .ConfigureServices(configureServices)
+                            |> ignore)
+                
+                .Build()
+            
+    use scope = db.Services.CreateScope()
+    updateDb scope.ServiceProvider
+    
+    db.Run()
+    
     0
+
