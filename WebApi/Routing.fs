@@ -61,19 +61,22 @@ let getAllProducts : HttpHandler =
             return! json products next ctx
         }
 
-let apiProductRoutes: HttpHandler =
-    subRoute "/product"
-        (choose [
-            GET >=> choose [
-                routef "/%O" getProduct
-                route "" >=> getAllProducts
-            ]
-            POST >=> choose [
-                route "" >=> addProduct
-            ]
-            PUT >=> routef "/%O" updateProduct
-            ]
-        )
+let apiProductRoutes: HttpHandler =  
+    (choose [
+        GET >=> choose [
+            routef "/%O" getProduct
+            route "" >=> getAllProducts
+        ]
+        POST >=> choose [
+            route "" >=> addProduct
+        ]
+        PUT >=> routef "/%O" updateProduct
+    ])
+        
+let apiBasketRoutes: HttpHandler =
+    (choose [
+        GET >=> routef "/%d" (fun (x: int64) -> json x)
+    ])
 
 let routes: HttpFunc -> HttpFunc =
     choose [
@@ -83,7 +86,10 @@ let routes: HttpFunc -> HttpFunc =
             ]
         subRoute "/api"
             (choose [
-                apiProductRoutes                
+                subRoute "/product"
+                    apiProductRoutes
+                subRoute "/basket"
+                    apiBasketRoutes                    
         ])
                               
         setStatusCode 404 >=> text "Not Found"

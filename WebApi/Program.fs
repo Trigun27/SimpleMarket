@@ -15,8 +15,9 @@ open Giraffe.Razor
 open System
 open System.IO
 open FluentMigrator.Runner
-open Db.Migration
+open OpenTelemetry.Trace
 
+open Db.Migration
 
 open Npgsql
 open Serilog
@@ -60,6 +61,15 @@ let configureServices (services: IServiceCollection) =
                 .ScanIn(typeof<Base>.Assembly)
                 .For
                 .Migrations() |> ignore) |> ignore
+        
+    services.AddOpenTelemetryTracing(fun builder ->
+            builder
+                .AddAspNetCoreInstrumentation()
+                .AddSqlClientInstrumentation(fun op -> op.SetDbStatementForText <- true)
+                .AddJaegerExporter() |> ignore )
+    |> ignore
+    
+    
 
 
 let updateDb (sp : IServiceProvider) =
