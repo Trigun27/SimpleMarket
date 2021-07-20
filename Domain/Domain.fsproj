@@ -8,7 +8,7 @@
         <Compile Include="Buyer.fs" />
         <Compile Include="Product.fs" />
         <Compile Include="RepoFile.fs" />
-        <Compile Include="Repo.fs" />
+        <Compile Include="RepoProduct.fs" />
     </ItemGroup>
 
     <ItemGroup>

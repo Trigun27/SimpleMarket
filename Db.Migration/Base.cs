@@ -8,5 +8,7 @@ namespace Db.Migration
         
         protected string ProductTable = "product";
 
+        protected string BuyerTable = "buyer";
+
     }
 }

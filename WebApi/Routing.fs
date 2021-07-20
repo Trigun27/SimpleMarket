@@ -1,65 +1,9 @@
 module Routing
 
-open System
-open System
-open System.Data
-open System.Net.Http
 open Giraffe
-open Microsoft.AspNetCore.Http
-open Npgsql
-open Products
-open FSharp.Control.Tasks
-open Repo
+open ApiProduct
+open ApiBuyer
 
-
-[<CLIMutable>]  
-type ProductIo = {
-    Id: Guid option
-    Name: string
-    Info: string
-}
-
-let getConn (ctx: HttpContext) =
-    ctx.RequestServices.GetService(typeof<NpgsqlConnection>)
-                    :?> IDbConnection
-
-let addProduct : HttpHandler =
-    fun (next: HttpFunc) (ctx: HttpContext) ->
-        task {
-            let! productIo = ctx.BindJsonAsync<ProductIo>()
-            let product = Product.create productIo.Name productIo.Info
-            let conn = getConn ctx
-            let! t = addProduct conn product
-            let! product = takeProduct conn product.Id
-            return! json product next ctx
-        }
-
-let getProduct (id: Guid) : HttpHandler =
-    fun (next: HttpFunc) (ctx: HttpContext) ->
-        task {
-            let conn = getConn ctx
-            let! product = takeProduct conn id
-            return! json product next ctx
-        }
-        
-let updateProduct (id: Guid) : HttpHandler =
-    fun (next: HttpFunc) (ctx: HttpContext) ->
-        task {
-            let! productIo = ctx.BindJsonAsync<ProductIo>()
-            let conn = getConn ctx
-            let request = Product.build productIo.Id.Value productIo.Name productIo.Info 
-            let! result = updateProduct conn request
-            let! product = takeProduct conn id
-            return! json product next ctx
-        }
-
-let getAllProducts : HttpHandler =
-    fun (next: HttpFunc) (ctx: HttpContext) ->
-        task {
-            let conn = getConn ctx
-            let! products = takeAllProducts conn
-            return! json products next ctx
-        }
 
 let apiProductRoutes: HttpHandler =  
     (choose [
@@ -77,6 +21,11 @@ let apiBasketRoutes: HttpHandler =
     (choose [
         GET >=> routef "/%d" (fun (x: int64) -> json x)
     ])
+    
+let apiBuyerRoutes: HttpHandler =
+    (choose [
+        GET >=> routef "/%s" getBuyer
+    ])
 
 let routes: HttpFunc -> HttpFunc =
     choose [
@@ -89,7 +38,9 @@ let routes: HttpFunc -> HttpFunc =
                 subRoute "/product"
                     apiProductRoutes
                 subRoute "/basket"
-                    apiBasketRoutes                    
+                    apiBasketRoutes
+                subRoute "/buyer"
+                    apiBuyerRoutes
         ])
                               
         setStatusCode 404 >=> text "Not Found"

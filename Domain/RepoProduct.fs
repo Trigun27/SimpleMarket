@@ -1,4 +1,4 @@
-module Repo
+module RepoProduct
 
 open System
 open System.Data

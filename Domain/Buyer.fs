@@ -6,9 +6,10 @@ open System
 type Buyer = {
     Id: Guid
     FirstName: string
-    LastName: string
+    LastName: string option
     IsVerified: bool
     Email: string
+    Phone: string
 }
 
 [<RequireQualifiedAccess>]
@@ -24,14 +25,14 @@ module Buyer =
         let msg = " should not be empty"
         let errors = seq {
             if (String.IsNullOrEmpty(user.FirstName)) then yield "FirstName" + msg
-            if (String.IsNullOrEmpty(user.LastName)) then yield "LastName" + msg
+            //if (String.IsNullOrEmpty(user.LastName)) then yield "LastName" + msg
             if (isValidEmail user.Email |> not) then yield "Not valid Email"
         }
         
         if (Seq.isEmpty errors) then Ok user else Error errors
         
-    let create fname lname email =
-        let u = {Id = Guid.NewGuid(); FirstName = fname; LastName = lname; Email = email; IsVerified = false}
+    let create fname lname email phone =
+        let u = {Id = Guid.NewGuid(); FirstName = fname; LastName = lname; Email = email; IsVerified = false; Phone = phone}
         validate u
     
 
