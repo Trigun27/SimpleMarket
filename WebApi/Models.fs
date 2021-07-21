@@ -11,6 +11,12 @@ type ProductIo = {
 }
 
 [<CLIMutable>]
+type Busket = {
+    ProductIn: ProductIo
+    Count: int
+}
+
+[<CLIMutable>]
 type Buyer = {
     Id: Guid option
     FirstName: string

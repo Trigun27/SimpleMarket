@@ -48,7 +48,6 @@ let configureServices (services: IServiceCollection) =
     let viewsFolderPath = Path.Combine(env.ContentRootPath, "Views")
     services.AddRazorEngine viewsFolderPath |> ignore
     
-    
     services.AddTransient<NpgsqlConnection>(fun x -> new NpgsqlConnection(config.GetConnectionString("Market"))) |> ignore
     
     // Register default Giraffe dependencies
@@ -69,6 +68,11 @@ let configureServices (services: IServiceCollection) =
                 .AddJaegerExporter() |> ignore )
     |> ignore
     
+    let redis = "localhost:6379" //config.GetValue("Redis")
+    services.AddStackExchangeRedisCache(fun builder ->
+            builder.Configuration <- redis
+        )
+    |> ignore
     
 
 
