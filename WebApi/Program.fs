@@ -100,8 +100,6 @@ let main _ =
             
     use scope = db.Services.CreateScope()
     updateDb scope.ServiceProvider
-    
     db.Run()
-    
     0
 
